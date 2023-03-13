@@ -27,3 +27,7 @@ For example for the above example: `https://dev.azure.com/huserben/WIA_Demo/_api
 
 As an example, if you want to write the age data in to the "Story Points" field, start the script like this:
 `python .\CalculateWorkItemAge.py --OrganizationUrl "https://dev.azure.com/huserben/" --TeamProject "WIA_Demo" --PersonalAccessToken "***********" --FieldName "Story Points" --TrialRun "False"`
+
+## Pipeline Integration
+You want to run this script on a regular base. As we humans tend to forget this, I propose that you leverage your Azure Pipelines for this. I've included a "sample" in *AzurePipeline.yaml* that shows how you can run the script from there.
+Use and adjust as you please.

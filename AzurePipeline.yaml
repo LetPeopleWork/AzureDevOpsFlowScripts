@@ -1,0 +1,35 @@
+trigger: none
+pr: none
+
+schedules:
+  # Runs once per night at 01:00 in the morning (see https://crontab.guru/#00_01_*_*_*)
+  - cron: 00 01 * * *
+    displayName: WorkItemAgeCalculator
+    branches:
+      include:
+        - main
+    always: true
+
+name: $(Date:yyyy.MM.dd)$(Rev:.r)
+
+jobs:
+  - job: CalculateWorkItemAge
+
+    pool: 
+      vmImage: ubuntu-latest
+
+    steps:
+      - checkout: self
+
+      - script: "python -m pip install -r requirements.txt"
+        displayName: "Install Python prerequisites"
+
+
+      # You don't want to put your PAT in the yaml file, make sure to use some kind of (secret) variable!
+
+      - task: PythonScript@0
+        displayName: Update Work Item Age
+        inputs:
+          scriptSource: 'filePath'
+          scriptPath: '$(System.DefaultWorkingDirectory)/CalculateWorkItemAge.py'
+          arguments: '--OrganizationUrl "https://dev.azure.com/huserben/" --TeamProject "WIA_Demo" --PersonalAccessToken "******" --FieldName "Age" --TrialRun "False"'
