@@ -1,6 +1,6 @@
 from msrest.authentication import BasicAuthentication
 from azure.devops.connection import Connection
-from azure.devops.v5_1.work_item_tracking.models import Wiql
+from azure.devops.v7_1.work_item_tracking.models import Wiql
 from datetime import date, datetime
 
 import argparse
