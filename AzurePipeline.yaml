@@ -13,7 +13,8 @@ schedules:
 name: $(Date:yyyy.MM.dd)$(Rev:.r)
 
 jobs:
-  - job: CalculateWorkItemAge
+  - job: RunAzureDevopsPythonScripts
+    displayName: Run Azure DevOps Python Scripts
 
     pool: 
       vmImage: ubuntu-latest
@@ -24,8 +25,15 @@ jobs:
       - script: "python -m pip install -r requirements.txt"
         displayName: "Install Python prerequisites"
 
-
       # You don't want to put your PAT in the yaml file, make sure to use some kind of (secret) variable!
+
+      - task: PythonScript@0
+        displayName: Run Monte Carlo Simulation
+        inputs:
+          scriptSource: 'filePath'
+          scriptPath: '$(System.DefaultWorkingDirectory)/MonteCarlo.py'
+          arguments: '--OrganizationUrl "https://dev.azure.com/huserben/" --PersonalAccessToken "******" --ReleaseTag "MyProduct v1.33.7" --TargetDate "08.04.2024" --GoalTag "SprintGoal" --IterationLength "7"'
+
 
       - task: PythonScript@0
         displayName: Update Work Item Age
