@@ -1,5 +1,8 @@
 # AzureDevOpsPythonScripts
 
+## Download Files
+In order to run the scripts, you need to download all the files in this repository. There are dependencies between the files so you cannot just download a single file. Please always use the full folder structure.
+
 ## Install Prerequisites
 Make sure you have python 3.x installed on your system and it's available via your PATH variable.
 
