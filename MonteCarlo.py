@@ -13,6 +13,7 @@ parser.add_argument("--ReleaseTag")
 parser.add_argument("--TargetDate")
 parser.add_argument("--GoalTag")
 parser.add_argument("--IterationLength")
+parser.add_argument("--RemainingItems")
 
 args = parser.parse_args()
 
@@ -21,6 +22,10 @@ work_item_service = WorkItemService(args.OrganizationUrl, args.PersonalAccessTok
 release_tag = args.ReleaseTag
 goal_tag = args.GoalTag
 target_date = None
+
+if args.RemainingItems:
+    remaining_items = int(args.RemainingItems)
+
 if args.TargetDate:
     target_date = datetime.datetime.strptime(args.TargetDate, "%d.%m.%Y").date()
 
@@ -31,23 +36,23 @@ if args.IterationLength:
                 # Work Item Types, Enable Prediction, History in Days, Done States, Area Paths
 predictions = [ Prediction(["Epic"], False, 180, ["Closed", "Resolved"], ["MyProduct\MyAreaPath"]),
                 Prediction(["Feature"], False, 120, ["Closed","Resolved"], []),
-                Prediction(["User Story", "Bug"], True, 90, ["Closed"], ["MyProduct\MyAreaPath"])]
+                Prediction(["User Story", "Bug"], True, 90, ["Closed"], ["SDM600\\Feature Development"])]
 
 def get_remaining_items_by_tag_and_type(work_item_types, tag):    
     print("Fetching items linked to Tag {0}:".format(tag))
     work_items = work_item_service.get_open_items_by_tag(tag)
     
-    remaining_items = []   
+    remaining_items_by_tag = []   
     
     for item in work_items:
         if item.type in work_item_types:
-          remaining_items.append(item)
+          remaining_items_by_tag.append(item)
           print("{0} - {1} - {2} - {3} - {4} - {5} - {6} - {7}".format(item.id, item.type, item.title, item.state, item.tags, item.boardColumn, item.closedDate, item.area_path))
     
-    remaining_items = len(remaining_items)
+    remaining_items_by_tag = len(remaining_items_by_tag)
     
-    print("{0} Items remaining".format(remaining_items))
-    return remaining_items
+    print("{0} Items remaining".format(remaining_items_by_tag))
+    return remaining_items_by_tag
 
 def get_closed_items_history(prediction):
     start_date = datetime.datetime.now() - datetime.timedelta(prediction.relevant_history_in_days)
@@ -77,6 +82,7 @@ print("ReleaseTag: {0}".format(args.ReleaseTag))
 print("TargetDate: {0}".format(args.TargetDate))
 print("GoalTag: {0}".format(args.GoalTag))
 print("IterationLength: {0}".format(args.IterationLength))
+print("Remaining Items: {0}".format(args.RemainingItems))
 print("----------------------------------------------------------------")
    
 for prediction in predictions.copy():        
@@ -104,10 +110,15 @@ for prediction in predictions.copy():
     predictions_targetdate_likelyhood = None
     
     if release_tag:
-        remaining_items = get_remaining_items_by_tag_and_type(prediction.work_item_types, release_tag)            
-        prediction.remaining_items = remaining_items            
-        if remaining_items > 0:              
-            (predictions_when_50, predictions_when_85, predictions_when_95, predictions_targetdate_likelyhood) = monte_carlo_service.when(remaining_items, closed_items_history, target_date)
+        print("Using Release Tag to get remaining Items")
+        remaining_items_for_release = get_remaining_items_by_tag_and_type(prediction.work_item_types, release_tag)            
+    elif remaining_items:
+        print("Using Fixed value for remaining Items")
+        remaining_items_for_release = remaining_items
+
+    prediction.remaining_items = remaining_items_for_release            
+    if remaining_items_for_release > 0:              
+        (predictions_when_50, predictions_when_85, predictions_when_95, predictions_targetdate_likelyhood) = monte_carlo_service.when(remaining_items_for_release, closed_items_history, target_date)        
     
     add_forecast_to_prediction(prediction, predictions_howmany_50, predictions_howmany_85, predictions_howmany_95, predictions_when_50, predictions_when_85, predictions_when_95, target_date, predictions_targetdate_likelyhood)
     
@@ -169,4 +180,4 @@ for prediction in predictions:
         print("85%: {0}".format(prediction.when_85))
         print("95%: {0}".format(prediction.when_95))
         print("----------------------------------------")
-        print("Chance of Target Date: {0} - {1}".format(target_date, prediction.target_date_likelyhood))
+        print("Chance of Target Date: {0} - {1}%".format(target_date, prediction.target_date_likelyhood))

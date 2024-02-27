@@ -57,6 +57,7 @@ After you've configured the predictions you want, save the file and run the scri
 - TargetDate: Date for which the *How Many* forecast should be run. *Optional*
 - GoalTag: Tag to identify the teams current goal (e.g. Sprint Goal). If set, a *When* forecast will be run for those items. *Optional*
 - IterationLength: Length of your iteration in days. If set, a *How Many* forecast will be run for the amount of days. *Optional*
+- RemainingItems: If you want to forecast a fixed amount of items, then you can specify it using this parameter intstead of using a Tag to dynamically get the remaining items. This will **only** be taken into account if *ReleaseTag* is omitted. *Optional*
 
 ## Calculate Work Item Age
 Let's you update the age of your work items on Azure DevOps according to the following formula: `(Today - Start Date) + 1`
