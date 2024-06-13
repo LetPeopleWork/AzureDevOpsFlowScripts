@@ -103,7 +103,7 @@ def main():
             def run_forecasts():
                 forecasts = config["forecasts"]
                 
-                monte_carlo_service = MonteCarloService(history_in_days, True)
+                monte_carlo_service = MonteCarloService(history_in_days, False)
                 
                 closed_items = [item for item in work_items if item.closed_date is not None]
                 throughput_history = monte_carlo_service.create_closed_items_history(closed_items)
