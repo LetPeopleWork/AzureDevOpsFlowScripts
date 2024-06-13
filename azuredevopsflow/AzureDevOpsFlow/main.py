@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 from FlowMetricsCSV.FlowMetricsService import FlowMetricsService
 from MonteCarloCSV.MonteCarloService import MonteCarloService
 
-from WorkItemService import WorkItemService
+from .WorkItemService import WorkItemService
 
 def print_logo():
     logo = r"""
@@ -78,13 +78,13 @@ def main():
             # Azure DevOps COnfig
             org_url = config["azureDevOps"]["organizationUrl"]
             api_token = config["azureDevOps"]["apiToken"]
-            backlog_query = config["azureDevOps"]["backlogQuery"]
-            backlog_history = int(config["azureDevOps"]["backlogHistoryInDays"])
+            item_query = config["azureDevOps"]["itemQuery"]
+            history_in_days = int(config["azureDevOps"]["historyInDays"])
             estimation_field = config["azureDevOps"]["estimationField"]
             
-            work_item_service = WorkItemService(org_url, api_token, estimation_field, backlog_history)
+            work_item_service = WorkItemService(org_url, api_token, estimation_field, history_in_days)
             
-            work_items = work_item_service.get_items_via_wiql(backlog_query)
+            work_items = work_item_service.get_items_via_wiql(item_query)
             work_items = [item for item in work_items if item.started_date is not None]
             
             # General Config
@@ -103,7 +103,7 @@ def main():
             def run_forecasts():
                 forecasts = config["forecasts"]
                 
-                monte_carlo_service = MonteCarloService(backlog_history, True)
+                monte_carlo_service = MonteCarloService(history_in_days, True)
                 
                 closed_items = [item for item in work_items if item.closed_date is not None]
                 throughput_history = monte_carlo_service.create_closed_items_history(closed_items)

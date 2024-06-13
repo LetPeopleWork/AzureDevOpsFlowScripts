@@ -6,19 +6,19 @@
     "azureDevOps": {
         "organizationUrl": "https://dev.azure.com/YourOrg",
         "apiToken": "",
-        "backlogQuery": "([System.WorkItemType] = \"User Story\" or [System.WorkItemType] = \"Bug\") AND [System.TeamProject] == \"Your Project\" AND [System.AreaPath] UNDER \"Team Project\\Team Name\"",
-        "backlogHistoryInDays": 90,
+        "itemQuery": "([System.WorkItemType] = \"User Story\" or [System.WorkItemType] = \"Bug\") AND [System.TeamProject] == \"Your Project\" AND [System.AreaPath] UNDER \"Team Project\\Team Name\"",
+        "historyInDays": 90,
         "estimationField": "Microsoft.VSTS.Scheduling.StoryPoints"
     },
     "forecasts":[
       {
         "name": "Release 24.10",
-        "remainingBacklogQuery": "([System.WorkItemType] = \"User Story\" or [System.WorkItemType] = \"Bug\") AND [System.TeamProject] == \"Your Project\" AND [System.AreaPath] UNDER \"Team Project\\Team Name\" AND [System.Tags] CONTAINS \"Release 24.10\"",
+        "remainingBacklogQuery": "([System.WorkItemType] = \"User Story\" or [System.WorkItemType] = \"Bug\") AND [System.TeamProject] == \"Your Project\" AND ([System.State] <> \"Closed\" OR [System.State] <> \"Removed\") AND [System.AreaPath] UNDER \"Team Project\\Team Name\" AND [System.Tags] CONTAINS \"Release 24.10\"",
         "targetDate": "2024-10-31"
       },
       {
         "name": "Sprint Goal",
-        "remainingBacklogQuery": "([System.WorkItemType] = \"Product Backlog Item\" or [System.WorkItemType] = \"Bug\") AND [System.TeamProject] == \"Your Project\" AND [System.AreaPath] UNDER \"Team Project\\Team Name\" AND [System.Tags] CONTAINS \"Sprint Goal\"",
+        "remainingBacklogQuery": "([System.WorkItemType] = \"Product Backlog Item\" or [System.WorkItemType] = \"Bug\") AND [System.TeamProject] == \"Your Project\" AND ([System.State] <> \"Closed\" OR [System.State] <> \"Removed\") AND [System.AreaPath] UNDER \"Team Project\\Team Name\" AND [System.Tags] CONTAINS \"Sprint Goal\"",
         "targetDate": 14
       }
     ],
