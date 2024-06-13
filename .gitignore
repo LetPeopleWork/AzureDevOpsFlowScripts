@@ -127,3 +127,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+Charts/
+ExampleConfig.json
+!azuredevopsflow/AzureDevOpsFlow/ExampleConfig.json
