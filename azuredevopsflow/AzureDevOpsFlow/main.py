@@ -75,7 +75,7 @@ def main():
             print("================================================================")
             config = read_config(config_path)
             
-            # Azure DevOps COnfig
+            # Azure DevOps Config
             org_url = config["azureDevOps"]["organizationUrl"]
             api_token = config["azureDevOps"]["apiToken"]
             item_query = config["azureDevOps"]["itemQuery"]
