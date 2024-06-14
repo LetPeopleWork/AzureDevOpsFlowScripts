@@ -14,7 +14,7 @@ history_in_days = 90
 work_item_service = WorkItemService(org_url, api_token, estimation_field, history_in_days)
 
 # Item Query to get all items in a teams backlog
-item_query = '([System.WorkItemType] = "User Story" or [System.WorkItemType] = "Bug") AND [System.TeamProject] == "Your Project" AND [System.AreaPath] UNDER "Team Project\\Team Name"'
+item_query = '([System.WorkItemType] = "User Story" or [System.WorkItemType] = "Bug") AND [System.TeamProject] == "Your Project" AND [System.AreaPath] UNDER "Team Project\Team Name"'
 
 # Get Work Items and filter out not started ones
 work_items = work_item_service.get_items_via_wiql(item_query)
@@ -44,7 +44,7 @@ target_date = (datetime.now() + timedelta(days_in_future)).date()
 print("How Many Forecasts: 50% Chance: {0} - 70% Chance: {1} - 85% Chance: {2} - 95% Chance: {3}".format(percentile_50, percentile_70, percentile_85, percentile_95))
 
 # Get "remaining items" based on query
-remaining_items_query = '([System.WorkItemType] = "User Story" or [System.WorkItemType] = "Bug") AND [System.TeamProject] == "Team Project" AND ([System.State] <> "Done" AND [System.State] <> "Removed") AND [System.AreaPath] UNDER "Team Project\\Team Name" AND [System.Tags] CONTAINS "Sprint Goal"'
+remaining_items_query = '([System.WorkItemType] = "User Story" or [System.WorkItemType] = "Bug") AND [System.TeamProject] == "Team Project" AND ([System.State] <> "Done" AND [System.State] <> "Removed") AND [System.AreaPath] UNDER "Team Project\Team Name" AND [System.Tags] CONTAINS "Sprint Goal"'
 remaining_items = len(work_item_service.get_items_via_wiql(remaining_items_query))
 
 # Forecast When Items will be done (if you specify a target date, you'll get a likelihood)
