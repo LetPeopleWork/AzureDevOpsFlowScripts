@@ -74,3 +74,37 @@ After you configured `azuredevopsflow` with your queries and with your token, yo
 
 ## How to use the created charts?
 You find more information on this in the [wiki](https://github.com/LetPeopleWork/FlowMetricsCSV/wiki)
+
+## How to build your own Applications on Top of this Package?
+If you have additional demands, like running the forecasts on a regular base and pushing the results somewhere (like in a database) instead of just displaying it in the commandline, you can build your own python application on top.
+
+After you installed the package, you can include the following services and then run your own applications on top:
+```
+from FlowMetricsCSV.FlowMetricsService import FlowMetricsService
+from MonteCarloCSV.MonteCarloService import MonteCarloService
+from AzureDevOpsFlow.WorkItemService import WorkItemService
+```
+
+You can create the various services and provide the necessary configuration as it best fits you:
+```
+work_item_service = WorkItemService(org_url, api_token, estimation_field, history_in_days)
+flow_metrics_service = FlowMetricsService(False, "Charts")
+monte_carlo_service = MonteCarloService(history_in_days, False)
+```
+
+Using those services, you can get the data from Azure DevOps via WIQL, transform it to create your charts, and run forecasts:
+```
+work_items = work_item_service.get_items_via_wiql(item_query)
+work_items = [item for item in work_items if item.started_date is not None]
+
+flow_metrics_service.plot_cycle_time_scatterplot(work_items, 14, percentiles, percentile_colors, "Cycle Time Scatterplot")
+
+closed_items = [item for item in work_items if item.closed_date is not None]
+throughput_history = monte_carlo_service.create_closed_items_history(closed_items)
+
+(percentile_50, percentile_70, percentile_85, percentile_95) = monte_carlo_service.how_many(target_date, throughput_history)
+
+(predicted_date_50, predicted_date_70, predicted_date_85, predicted_date_95, target_date_likelyhood) = monte_carlo_service.when(remaining_items, throughput_history, target_date)
+```
+
+See [Github](https://github.com/LetPeopleWork/AzureDevOpsFlowScripts/blob/main/azuredevopsflow/Examples/use_individual_services.py) for a full example of how you can use this.

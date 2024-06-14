@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='azuredevopsflow',
-    version='0.9.1',
+    version='0.9.2',
     packages=find_packages(),
     include_package_data=True,
     package_data={
@@ -18,7 +18,7 @@ setup(
     },
     author='Benjamin Huser-Berta',
     author_email='benj.huser@gmail.com',
-    description='A package to generate flow metrics charts from CSV files.',
+    description='A package to generate flow metrics charts and run Monte Carlo Simulation based Forecasts based on WIQL queries against Azure DevOps.',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
     url='https://letpeople.work',
