@@ -13,7 +13,7 @@ Once you have made sure python is installed, you can download `azuredevopsflow` 
 
 ## Run azuredevopsflow
 If your installation was successfull, you can now run `azuredevopsflow` via the commandline. When not supplied with any parameter for a configuration file, it will automatically copy the `ExampleConfig.json` to your current directory and run using. This will fail with the following error `TF400813: The user 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' is not authorized to access this resource.` as you must configure your connection to Azure DevOps first.
-**Note**: It's recommended to rename your config file from *ExampleConfig.json* to something more meaningful (like *TeamNameConfig.json*) and to specify this configuration file when running it again: `flowmetricscsv --ConfigFileNames "TeamNameConfig.json"`.
+**Note**: It's recommended to rename your config file from *ExampleConfig.json* to something more meaningful (like *TeamNameConfig.json*) and to specify this configuration file when running it again: `azuredevopsflow --ConfigFileNames "TeamNameConfig.json"`.
 
 ### Running azuredevopsflow with multiple Configurations
 You can have multiple configurations that you can use to create different charts and/or run different forecasts. For example for different teams or different item types (for example if you want to visualize Epics differently than other work items).
@@ -51,6 +51,8 @@ In order to make any use of `azuredevopsflow`, you must specify against which Az
 
 ### Forecast Settings
 You can add one or more forecasts. Forecasts need two inputs: The remaining items you want to forecast (when will they be done?) and a target date (how much can we get done till then). The target date is specified either as a date in the format *YYYY-mm-dd* or as number. If you specify a number, it will use the date that is this amount of days in the future. To get the remaining items, you specify a query that returns all items that are not yet done and you want to forecast. You can use all filters WIQL has to offer, for example filtering by area path, tag, iteration path, or anything else.
+
+If you don't provide a *target date*, no "How Many" simulation will be run. If you don't provide a *remaining Backlog Query*, no "When" simulation will be run. If you provide both, you'll get a on top a likelihood of reaching the target date with the remaining backlog.
 
 | Name                   | Description                          | Sample Value      |
 |------------------------|--------------------------------------|--------------------|

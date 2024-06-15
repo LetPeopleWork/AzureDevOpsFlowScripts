@@ -110,18 +110,34 @@ def main():
                 
                 for forecast in forecasts:                    
                     print("Running Forecast for {0}".format(forecast["name"]))
-                    remaining_items_query = forecast["remainingBacklogQuery"]
-                    target_date = forecast["targetDate"]
+
+                    run_mc_when = False
+                    run_mc_how_many = False
                     
-                    if isinstance(target_date, int):
-                        target_date = (datetime.now() + timedelta(target_date)).date()
+                    if "remainingBacklogQuery" in forecast:
+                        remaining_items_query = forecast["remainingBacklogQuery"]
+                        run_mc_when = True
+                    
+                    if "targetDate" in forecast:    
+                        target_date = forecast["targetDate"]
+                        run_mc_how_many = True
+                    
+                    if target_date:
+                        if isinstance(target_date, int):
+                            target_date = (datetime.now() + timedelta(target_date)).date()
+                        else:
+                            target_date = datetime.strptime(target_date, "%Y-%m-%d").date()
                     else:
-                        target_date = datetime.strptime(target_date, "%Y-%m-%d").date()
+                        target_date = None
+                        run_mc_how_many = False
                     
-                    remaining_items = work_item_service.get_items_via_wiql(remaining_items_query)
+                    if run_mc_how_many:
+                        monte_carlo_service.how_many(target_date, throughput_history)
                     
-                    monte_carlo_service.how_many(target_date, throughput_history)
-                    monte_carlo_service.when(len(remaining_items), throughput_history, target_date)
+                    if run_mc_when:
+                        remaining_items = work_item_service.get_items_via_wiql(remaining_items_query)
+                        monte_carlo_service.when(len(remaining_items), throughput_history, target_date)
+
 
             def create_cycle_time_scatterplot():
                 chart_config = config["cycleTimeScatterPlot"]
