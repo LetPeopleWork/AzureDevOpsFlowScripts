@@ -35,23 +35,12 @@ def parse_ado_date(date):
 
 def extract_age(work_item_history):
     for history_entry in work_item_history["value"]:
-        if "fields" in history_entry and "System.State" in history_entry["fields"]:
-            state_change = history_entry["fields"]["System.State"]
-            changed_date_field = history_entry["fields"]["System.ChangedDate"]
+        if "fields" in history_entry and "Microsoft.VSTS.Common.ActivatedDate" in history_entry["fields"]:
+            activated_date = parse_ado_date(history_entry["fields"]["Microsoft.VSTS.Common.ActivatedDate"]["newValue"])
 
-            if "oldValue" in state_change and "newValue" in changed_date_field:
-                old_state = state_change["oldValue"]
-                new_state = state_change["newValue"]
-                changed_date = parse_ado_date(changed_date_field["newValue"])
-
-                # When it was moved "out of new" we care -> count days from then till today + 1 -> that's our WIA
-                if old_state == "New":
-                    
-                    work_item_age = (date_today - changed_date.date()).days + 1
-                    print("Item was moved from {0} to {1} on {2} -> Work Item Age: {3}".format(old_state, new_state, changed_date, work_item_age))
-                    return work_item_age
-                    
-                    
+            work_item_age = (date_today - activated_date.date()).days + 1
+            print("Item was started on {0} -> Work Item Age: {1}".format(activated_date, work_item_age))
+            return work_item_age
 
     return 0
 
